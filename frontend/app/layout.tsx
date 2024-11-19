@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Background from "./components/Background";
-import { FunctionalityProvider } from "./functionalityContext";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 
