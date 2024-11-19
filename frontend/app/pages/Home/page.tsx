@@ -2,20 +2,16 @@
 import Sidebar from '@/app/components/Sidebar'
 import React, { useEffect, useRef, useState } from 'react'
 import BottomBar from '@/app/components/BottomBar'
-
-type input = {
-  id: number,
-  x: number,
-  y: number,
-  text: string,
-  textColor: string
-}
+import { useAppSelector } from '@/app/Redux/hooks'
+import input from '@/app/Interfaces/input'
 
 export default function HomePage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [inputs, setInputs] = useState<input[]>([]);
-  const [textColor, setTextColor] = useState('text-black')
-
+  const textColor = useAppSelector(state => state.TextColor.textColor);
+  const textSize = useAppSelector(state => state.TextSize.textSize);
+  const fontFamily = useAppSelector(state => state.FontFamily.fontFamily);
+  
   useEffect(() => {
     const handleCanvasClick = (e: MouseEvent) => {
       if (canvasRef.current) {
@@ -25,7 +21,7 @@ export default function HomePage() {
 
         setInputs((prev) => [
           ...prev,
-          { id: prev.length + 1, x: XPosition, y: YPosition, text: '', textColor: textColor },
+          { id: prev.length + 1, x: XPosition, y: YPosition, text: '', textColor: textColor, textSize: textSize, fontFamily: fontFamily },
         ]);
       }
     };
@@ -50,16 +46,12 @@ export default function HomePage() {
     }
   }
 
-  const handleColor = (textColor: string) => {
-    setTextColor(textColor);
-  }
-
   const settingText = (e: React.ChangeEvent, id: number) => {
-    let target = e.target as HTMLTextAreaElement;
+    let target = e.target as HTMLInputElement;
 
     let updatedInputs = inputs.map(input => (
       input.id === id ?
-        { ...input, text: target.value, textColor: textColor } : input
+        { ...input, text: target.value, textColor: textColor, textSize: textSize, fontFamily: fontFamily } : input
     ))
     setInputs(updatedInputs)
   };
@@ -67,7 +59,7 @@ export default function HomePage() {
   return (
     <>
       <section className='relative w-screen h-screen pr-10'>
-        <Sidebar onSendData={handleColor} />
+        <Sidebar />
         <canvas className='bg-white rounded-md shadow-md w-screen h-screen' ref={canvasRef}>
         </canvas>
         {
@@ -79,12 +71,12 @@ export default function HomePage() {
                 top: `${input.y}px`,
                 minHeight: '3rem',
                 padding: '4px 8px',
-                fontSize: '2rem',
                 outline: 'none',
-                border: '1px solid black',
-                backgroundColor: 'transparent'
+                // border: '1px solid black',
+                backgroundColor: 'transparent',
+                width: 'auto'
               }}
-              className={`${input.textColor} w-[${input.text?.length}px]`}
+              className={`${input.textColor} ${input.textSize} ${input.fontFamily}`}
               autoFocus
               onChange={(e) => settingText(e, input.id)}
             />

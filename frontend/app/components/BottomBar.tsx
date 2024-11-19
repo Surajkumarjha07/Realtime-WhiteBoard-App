@@ -11,14 +11,16 @@ import PhotoOutlinedIcon from '@mui/icons-material/PhotoOutlined';
 import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
 import { useFunctionalityContext } from '../functionalityContext';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
+import { setFunctionality } from '../Redux/slices/functionality';
 
 export default function BottomBar() {
-    const {functionality, setFunctionality} = useFunctionalityContext(); 
+    const dispatch = useAppDispatch();
+    const functionality = useAppSelector(state => state.Functionality.functionality);
 
     const handleActive = (e: React.MouseEvent<HTMLButtonElement>) => {
-        let target = e.target as HTMLButtonElement;
-        setFunctionality(target.name);
-        console.log(functionality);
+        let target = e.target as HTMLButtonElement;        
+        dispatch(setFunctionality(target.name))
     }
 
     return (
