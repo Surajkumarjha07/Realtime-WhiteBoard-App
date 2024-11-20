@@ -10,7 +10,6 @@ import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import PhotoOutlinedIcon from '@mui/icons-material/PhotoOutlined';
 import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
-import { useFunctionalityContext } from '../functionalityContext';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { setFunctionality } from '../Redux/slices/functionality';
 

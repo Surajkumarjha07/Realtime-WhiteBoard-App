@@ -1,9 +1,13 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import { useAppDispatch } from '../Redux/hooks'
+import { setNoteTextSize } from '../Redux/slices/noteFeatures';
+import { setNoteFontFamily } from '../Redux/slices/noteFeatures';
 
 export default function NotesBottomComponent() {
     const [toggle, setToggle] = useState(false)
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         document.addEventListener("click", (e: MouseEvent) => {
@@ -17,21 +21,31 @@ export default function NotesBottomComponent() {
         })
     }, [])
 
+    function TextSize(e: React.MouseEvent) {
+        let target = e.target as HTMLButtonElement
+        dispatch(setNoteTextSize(target.name))
+    }
+
+    function FontFamily(e: React.MouseEvent) {
+        let target = e.target as HTMLButtonElement;
+        dispatch(setNoteFontFamily(target.name))
+    }
+
     return (
         <>
             <div className='flex flex-col justify-between gap-1 relative'>
                 <div className='flex justify-center items-center gap-8'>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md'> S </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md'> M </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md'> L </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md'> XL </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md' name='3xl' onClick={TextSize}> S </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md' name='4xl' onClick={TextSize}> M </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md' name='5xl' onClick={TextSize}> L </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md' name='6xl' onClick={TextSize}> XL </button>
                 </div>
 
                 <div className='flex justify-center items-center gap-8'>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md drawFont'> Aa </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md font-sans'> Aa </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md font-serif'> Aa </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md font-mono'> Aa </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md drawFont' name='extrabold' onClick={FontFamily}> Aa </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md font-sans' name='sans' onClick={FontFamily}> Aa </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md font-serif' name='serif' onClick={FontFamily}> Aa </button>
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md font-mono' name='mono' onClick={FontFamily}> Aa </button>
                 </div>
 
                 <div className='flex justify-center items-center gap-8'>

@@ -1,15 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import TextColorReducer from './slices/textColor'
 import FunctionalityReducer from './slices/functionality'
-import TextSizeReducer from './slices/textSize'
-import FontFamilyReducer from './slices/fontFamily'
+import TextFeaturesReducer from './slices/textFeatures';
+import NoteFeaturesReducer from './slices/noteFeatures';
 
 export const store = configureStore({
     reducer: {
-        TextColor: TextColorReducer,
         Functionality: FunctionalityReducer,
-        TextSize: TextSizeReducer,
-        FontFamily: FontFamilyReducer
+        TextFeatures: TextFeaturesReducer,
+        NoteFeatures: NoteFeaturesReducer
     }
 });
 
