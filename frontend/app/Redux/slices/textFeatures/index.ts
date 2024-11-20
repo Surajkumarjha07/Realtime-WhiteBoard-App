@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     textColor: 'black',
-    textSize: '3xl',
-    fontFamily: 'sans'
+    textSize: 'text-3xl',
+    fontFamily: 'font-sans'
 }
 
 export const TextFeatures = createSlice({

@@ -5,6 +5,7 @@ import BottomBar from '@/app/components/BottomBar'
 import { useAppSelector } from '@/app/Redux/hooks'
 import canvasTextFeatures from '@/app/Features/canvasTextFeatures'
 import StickyNotesFeatures from '@/app/Features/stickyNotesFeatures'
+import {bgColorMap, textColorMap} from '../../ObjectMapping'
 
 export default function HomePage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -45,10 +46,10 @@ export default function HomePage() {
             position: 'absolute',
             top: `${note.y}px`,
             left: `${note.x}px`,
-            padding: '4px 8px',
+            padding: '8px 8px',
           }} 
           autoFocus
-          className={`text-${note.noteTextSize} font-${note.noteFontFamily} bg-${note.noteBackgroundColor} rounded-md outline-none`}
+          className={`${note.noteTextSize} ${note.noteFontFamily} ${bgColorMap.get(note.noteBackgroundColor)} rounded-md outline-none`}
           onChange={(e) => settingNoteText(e, note.id)}
           />
          )) 
@@ -56,7 +57,7 @@ export default function HomePage() {
 
         {
           inputs.map((input) => (
-            <input key={input.id} type='text' onBlur={() => removeInput(input.id)}
+            <input key={input.id} type='text' onBlur={() => removeInput()}
               style={{
                 position: "absolute",
                 left: `${input.x}px`,
@@ -68,7 +69,7 @@ export default function HomePage() {
                 backgroundColor: 'transparent',
                 width: 'auto'
               }}
-              className={`text-${input.textColor} text-${input.textSize} font-${input.fontFamily}`}
+              className={`${textColorMap.get(input.textColor)} ${input.textSize} ${input.fontFamily}`}
               autoFocus
               onChange={(e) => settingText(e, input.id)}
             />

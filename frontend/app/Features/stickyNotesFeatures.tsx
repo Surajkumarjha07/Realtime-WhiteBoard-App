@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import stickyNotesFeature from '../Interfaces/stickyNotesFeature'
 import { useAppSelector } from '../Redux/hooks'
 import note from '../Interfaces/note';

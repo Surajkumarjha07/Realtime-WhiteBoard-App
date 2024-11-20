@@ -33,7 +33,7 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
     };
   }, [functionality, textSize, textColor, fontFamily])
 
-  const removeInput = (id: number) => {
+  const removeInput = () => {
     let filterArr = inputs.filter(input => input.text !== "")
     setInputs(filterArr);
   }

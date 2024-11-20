@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    noteTextSize: '3xl',
-    noteFontFamily: 'sans',
-    noteBackgroundColor: 'red-400'
+    noteTextSize: 'text-3xl',
+    noteFontFamily: 'font-sans',
+    noteBackgroundColor: 'orange-300'
 }
 
 export const NoteFeatures = createSlice({
