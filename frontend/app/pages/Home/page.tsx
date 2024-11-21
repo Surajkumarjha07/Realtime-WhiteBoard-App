@@ -6,6 +6,7 @@ import { useAppSelector } from '@/app/Redux/hooks'
 import canvasTextFeatures from '@/app/Features/canvasTextFeatures'
 import StickyNotesFeatures from '@/app/Features/stickyNotesFeatures'
 import {bgColorMap, textColorMap} from '../../ObjectMapping'
+import canvasPencilFeature from '@/app/Features/canvasPencilFeature'
 
 export default function HomePage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -29,6 +30,10 @@ export default function HomePage() {
     noteTextSize,
     noteFontFamily,
     noteBackgroundColor
+  })
+
+  const {} = canvasPencilFeature({
+    canvasRef
   })
 
   return (
