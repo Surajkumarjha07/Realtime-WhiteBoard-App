@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import pencilFeature from '../Interfaces/pencilFeature'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from '../Redux/hooks'
+import shapeFeature from '../Interfaces/shapeFeature';
 
-export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
+export default function canvasShapeFeature({ canvasRef, shapeColor }: shapeFeature) {
   const functionality = useAppSelector(state => state.Functionality.functionality)
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
-  const [startX, setStartX] = useState<number>(0);
-  const [startY, setStartY] = useState<number>(0);
-  const [endY, setEndY] = useState<number>(0);
-  const [endX, setEndX] = useState<number>(0);
+  const startXRef = useRef(0)
+  const startYRef = useRef(0)
   const [isDrawing, setIsDrawing] = useState<boolean>(false)
-  const [lines, setLines] = useState<CanvasRenderingContext2D[] | null>(null)
+  const [shapes, setShapes] = useState()
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -25,13 +23,12 @@ export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
     }
 
     const DrawingStart = (e: MouseEvent) => {
-      setIsDrawing(true);
       if (canvasRef.current) {
         let rect = canvasRef.current.getBoundingClientRect();
-        let XPosition = e.clientX - rect!.left;
-        let YPosition = e.clientY - rect!.top;
-        setStartX(XPosition)
-        setStartY(YPosition)
+        startXRef.current = e.clientX - rect!.left;
+        startYRef.current = e.clientY - rect!.top;
+        console.log("startX: ", startXRef.current, "startY: ", startYRef.current);
+        setIsDrawing(true);
       }
     }
 
@@ -40,7 +37,7 @@ export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
     }
 
     let canvasElement = canvasRef.current;
-    if (canvasElement && functionality === 'pencil') {
+    if (canvasElement && functionality === 'upArrow') {
       canvasElement.addEventListener("mousedown", DrawingStart)
       canvasElement.addEventListener("mousemove", DrawingLine)
       canvasElement.addEventListener("mouseup", DrawingEnd);
@@ -49,7 +46,7 @@ export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
     return () => {
       canvasRef.current?.removeEventListener("mousedown", DrawingStart)
       canvasRef.current?.removeEventListener("mousemove", DrawingLine)
-      canvasRef.current?.removeEventListener("mouseup",DrawingEnd)
+      canvasRef.current?.removeEventListener("mouseup", DrawingEnd)
     }
   }, [functionality, isDrawing, ctx])
 
@@ -58,18 +55,15 @@ export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
       let rect = canvasRef.current.getBoundingClientRect();
       let XPosition = e.clientX - rect!.left;
       let YPosition = e.clientY - rect!.top;
-      setEndX(XPosition)
-      setEndY(YPosition);
-      console.log(XPosition, YPosition);
+      let width = XPosition - startXRef.current;
+      let height = YPosition - startYRef.current;
 
       if (ctx && isDrawing) {
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(XPosition, YPosition)
-        ctx.stroke();
+        ctx.fillStyle = 'blue'
+        ctx.fillRect(startXRef.current, startYRef.current, width, height);
       }
     }
-  }, [startX, startY, endX, endY, ctx, isDrawing])
+  }, [ctx, isDrawing])
 
-  return {}
+  return {shapes}
 }

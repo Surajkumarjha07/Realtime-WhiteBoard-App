@@ -6,7 +6,8 @@ import { useAppSelector } from '@/app/Redux/hooks'
 import canvasTextFeatures from '@/app/Features/canvasTextFeatures'
 import StickyNotesFeatures from '@/app/Features/stickyNotesFeatures'
 import {bgColorMap, textColorMap} from '../../ObjectMapping'
-import canvasPencilFeature from '@/app/Features/canvasPencilFeature'
+import canvasPencilFeature from '@/app/Features/canvasShapeFeature'
+import canvasShapeFeature from '@/app/Features/canvasShapeFeature'
 
 export default function HomePage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -17,6 +18,7 @@ export default function HomePage() {
   const noteTextSize = useAppSelector(state => state.NoteFeatures.noteTextSize);
   const noteFontFamily = useAppSelector(state => state.NoteFeatures.noteFontFamily);
   const noteBackgroundColor = useAppSelector(state => state.NoteFeatures.noteBackgroundColor);
+  const shapeColor = useAppSelector(state => state.ShapeFeatures.shapeColor);
 
   const { settingText, removeInput, inputs } = canvasTextFeatures({
     canvasRef,
@@ -32,15 +34,20 @@ export default function HomePage() {
     noteBackgroundColor
   })
 
-  const {} = canvasPencilFeature({
-    canvasRef
+  // const {} = canvasPencilFeature({
+  //   canvasRef
+  // })
+
+  const {shapes} = canvasShapeFeature({
+    canvasRef,
+    shapeColor
   })
 
   return (
     <>
       <section className='relative w-screen h-screen pr-10'>
         <Sidebar />
-        <canvas className={`bg-white rounded-md shadow-md w-screen h-screen ${(functionality === "text" || functionality === "notes") ? 'cursor-crosshair' : 'cursor-default'}`} ref={canvasRef}>
+        <canvas className={`bg-white rounded-md shadow-md w-screen h-screen ${(functionality === "text" || functionality === "notes" || functionality === "upArrow") ? 'cursor-crosshair' : 'cursor-default'}`} ref={canvasRef}>
         </canvas>
 
         {
@@ -54,7 +61,7 @@ export default function HomePage() {
             padding: '8px 8px',
           }} 
           autoFocus
-          className={`${note.noteTextSize} ${note.noteFontFamily} ${bgColorMap.get(note.noteBackgroundColor)} rounded-md outline-none`}
+          className={`${note.noteTextSize} ${note.noteFontFamily} ${bgColorMap.get(note.noteBackgroundColor)} rounded-md outline-none resize-none text-center`}
           onChange={(e) => settingNoteText(e, note.id)}
           />
          )) 
