@@ -4,7 +4,8 @@ type stickyNotesFeature = {
     canvasRef: RefObject<HTMLCanvasElement>,
     noteTextSize: string,
     noteFontFamily: string,
-    noteBackgroundColor: string
+    noteBackgroundColor: string,
+    noteTextBrightness: number
 }
 
 export default stickyNotesFeature;

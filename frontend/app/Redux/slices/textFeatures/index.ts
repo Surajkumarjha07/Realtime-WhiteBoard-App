@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     textColor: 'black',
     textSize: 'text-3xl',
-    fontFamily: 'font-sans'
+    fontFamily: 'font-sans',
+    textBrightness: 100
 }
 
 export const TextFeatures = createSlice({
@@ -12,18 +13,19 @@ export const TextFeatures = createSlice({
     reducers: {
         setTextColor: (state, action) => {
             state.textColor = action.payload;   
-            console.log(action.payload);   
         },
         setTextSize: (state, action) => {
             state.textSize = action.payload;
-            console.log(action.payload);   
         },
         setFontFamily: (state, action) => {
             state.fontFamily = action.payload;
-            console.log(action.payload);   
+        },
+        setTextBrightness: (state, action) => {
+            state.textBrightness = action.payload;
+            console.log(action.payload);            
         }
     }
 })
 
-export const {setTextColor, setTextSize, setFontFamily} = TextFeatures.actions;
+export const {setTextColor, setTextSize, setFontFamily, setTextBrightness} = TextFeatures.actions;
 export default TextFeatures.reducer;

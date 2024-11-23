@@ -2,7 +2,8 @@ import { RefObject } from "react";
 
 type shapeFeature = {
     canvasRef: RefObject<HTMLCanvasElement>,
-    shapeColor: string,
+    shapeType: string,
+    shapeColor: string
 }
 
 export default shapeFeature;

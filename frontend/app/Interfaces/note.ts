@@ -5,7 +5,8 @@ type note = {
     text: string,
     noteTextSize: string,
     noteFontFamily: string,
-    noteBackgroundColor: string
+    noteBackgroundColor: string,
+    noteTextBrightness: number
 }
 
 export default note;

@@ -1,7 +1,9 @@
 type shape = {
+    id: number,
     x: number,
     y: number,
-    width: number,
-    height: number,
-    shapeColor: string
+    width?: number,
+    height?: number,
+    shapeColor: string,
+    shapeType: string
 }

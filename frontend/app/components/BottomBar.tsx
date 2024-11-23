@@ -13,9 +13,14 @@ import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutl
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { setFunctionality } from '../Redux/slices/functionality';
 import Shapes from './shapes';
+import RectangleOutlinedIcon from '@mui/icons-material/RectangleOutlined';
+import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
+import ChangeHistoryOutlinedIcon from '@mui/icons-material/ChangeHistoryOutlined';
+import HexagonOutlinedIcon from '@mui/icons-material/HexagonOutlined';
 
 export default function BottomBar() {
     const dispatch = useAppDispatch();
+    const shapeType = useAppSelector(state => state.ShapeFeatures.shapeType)
     const functionality = useAppSelector(state => state.Functionality.functionality);
 
     const handleActive = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,7 +60,9 @@ export default function BottomBar() {
                     <PhotoOutlinedIcon className={functionality !== "images" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
                 </button>
                 <button className={functionality === "frame" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='frame' onClick={handleActive}>
-                    <CropFreeOutlinedIcon className={functionality !== "frame" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
+                    {
+                        shapeType === "rectangle" ? <RectangleOutlinedIcon className='text-black'/> : shapeType === "circle" ? <CircleOutlinedIcon className='text-black'/> : shapeType === "triangle" ? <ChangeHistoryOutlinedIcon className='text-black'/> : <HexagonOutlinedIcon className='text-black'/>
+                    }
                 </button>
 
                 <div className='relative'>
