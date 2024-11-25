@@ -1,12 +1,14 @@
 "use client"
 import Sidebar from '@/app/components/Sidebar'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import BottomBar from '@/app/components/BottomBar'
 import { useAppSelector } from '@/app/Redux/hooks'
 import canvasTextFeatures from '@/app/Features/canvasTextFeatures'
 import StickyNotesFeatures from '@/app/Features/stickyNotesFeatures'
 import { bgColorMap, borderColorMap, noteTextBrightnessMap, textBrightnessMap, textColorMap } from '../../ObjectMapping'
 import canvasShapeFeature from '@/app/Features/canvasShapeFeature'
+import canvasArrowFeatures from '@/app/Features/canvasArrowFeatures'
+import canvasPencilFeature from '@/app/Features/canvasPencilFeature'
 
 export default function HomePage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -18,9 +20,12 @@ export default function HomePage() {
   const noteTextSize = useAppSelector(state => state.NoteFeatures.noteTextSize);
   const noteFontFamily = useAppSelector(state => state.NoteFeatures.noteFontFamily);
   const noteBackgroundColor = useAppSelector(state => state.NoteFeatures.noteBackgroundColor);
-  const noteTextBrightness = useAppSelector(state => state.NoteFeatures.noteTextBrightness); 
+  const noteTextBrightness = useAppSelector(state => state.NoteFeatures.noteTextBrightness);
   const shapeType = useAppSelector(state => state.ShapeFeatures.shapeType);
   const shapeColor = useAppSelector(state => state.ShapeFeatures.shapeColor);
+  const patternType = useAppSelector(state => state.ShapeFeatures.patternType);
+  const borderType = useAppSelector(state => state.ShapeFeatures.borderType);
+  const opacity = useAppSelector(state => state.ShapeFeatures.opacity);
 
   const { settingText, removeInput, inputs } = canvasTextFeatures({
     canvasRef,
@@ -41,8 +46,19 @@ export default function HomePage() {
   const { shapes } = canvasShapeFeature({
     canvasRef,
     shapeColor,
-    shapeType
-  })  
+    shapeType,
+    patternType,
+    borderType,
+    opacity
+  })
+
+  const { arrows } = canvasArrowFeatures({
+    canvasRef
+  })
+
+  const { } = canvasPencilFeature({
+    canvasRef
+  })
 
   return (
     <>
@@ -50,6 +66,23 @@ export default function HomePage() {
         <Sidebar />
         <canvas className={`bg-white rounded-md shadow-md w-screen h-screen ${(functionality === "text" || functionality === "notes" || functionality === "upArrow") ? 'cursor-crosshair' : 'cursor-default'}`} ref={canvasRef}>
         </canvas>
+
+        {
+          arrows.map(arrow => (
+            <div key={arrow.id}
+              style={{
+                position: 'absolute',
+                top: `${arrow.y}px`,
+                left: `${arrow.x}px`,
+                width: `${arrow.width}px`,
+                height: `${arrow.height}px`,
+                backgroundColor: `${arrow.arrowColor}`,
+                transform: `rotate(${arrow.rotate}deg)`
+              }}
+              className='rounded-md'
+            />
+          ))
+        }
 
         {
           shapes.map(shape => (
@@ -81,7 +114,7 @@ export default function HomePage() {
                     top: `${shape.y}px`,
                     left: `${shape.x}px`,
                   }}
-                  className={`w-48 h-48 ${borderColorMap.get(shape.shapeColor)} border-4 ${shape.shapeType === "circle" ? 'rounded-full' : 'rounded-md'}`} />
+                  className={`w-48 h-48 ${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} border-4 ${shape.shapeType === "circle" ? 'rounded-full' : 'rounded-md'} ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-md' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-none' : 'border-dotted'}`} />
           ))
         }
 

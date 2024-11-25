@@ -47,9 +47,7 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
         { ...input, text: target.value, textColor: textColor, textSize: textSize, fontFamily: fontFamily, textBrightness: textBrightness } : input
     ))
     setInputs(updatedInputs)
-  };
-  console.log(inputs);
-  
+  };  
 
   return { settingText, removeInput, inputs };
 

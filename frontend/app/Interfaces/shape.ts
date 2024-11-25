@@ -5,5 +5,8 @@ type shape = {
     width?: number,
     height?: number,
     shapeColor: string,
-    shapeType: string
+    shapeType: string,
+    patternType?: string,
+    borderType?: string,
+    opacity: number
 }

@@ -8,7 +8,6 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined';
 import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import PhotoOutlinedIcon from '@mui/icons-material/PhotoOutlined';
-import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { setFunctionality } from '../Redux/slices/functionality';
@@ -17,6 +16,7 @@ import RectangleOutlinedIcon from '@mui/icons-material/RectangleOutlined';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import ChangeHistoryOutlinedIcon from '@mui/icons-material/ChangeHistoryOutlined';
 import HexagonOutlinedIcon from '@mui/icons-material/HexagonOutlined';
+import { setImage } from '../Redux/slices/images';
 
 export default function BottomBar() {
     const dispatch = useAppDispatch();
@@ -27,6 +27,19 @@ export default function BottomBar() {
         let target = e.target as HTMLButtonElement;
         dispatch(setFunctionality(target.name))
     }
+
+    // const handleImage = (event: any) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+
+    //         reader.onload = (e) => {
+    //             dispatch(setImage(e.target!.result as string));
+    //         };
+
+    //         reader.readAsDataURL(file);
+    //     }
+    // }
 
     return (
         <>
@@ -57,11 +70,12 @@ export default function BottomBar() {
                     <StickyNote2OutlinedIcon className={functionality !== "notes" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
                 </button>
                 <button className={functionality === "images" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='images' onClick={handleActive}>
+                    {/* <input type="file" name="imageFile" onChange={handleImage} /> */}
                     <PhotoOutlinedIcon className={functionality !== "images" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
                 </button>
-                <button className={functionality === "frame" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='frame' onClick={handleActive}>
+                <button className={functionality === "shapes" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='shapes' onClick={handleActive}>
                     {
-                        shapeType === "rectangle" ? <RectangleOutlinedIcon className='text-black'/> : shapeType === "circle" ? <CircleOutlinedIcon className='text-black'/> : shapeType === "triangle" ? <ChangeHistoryOutlinedIcon className='text-black'/> : <HexagonOutlinedIcon className='text-black'/>
+                        shapeType === "rectangle" ? <RectangleOutlinedIcon className={`${functionality === 'shapes' ? 'text-white' : 'text-black'} pointer-events-none`} /> : shapeType === "circle" ? <CircleOutlinedIcon className={`${functionality === 'shapes' ? 'text-white' : 'text-black'} pointer-events-none`} /> : shapeType === "triangle" ? <ChangeHistoryOutlinedIcon className={`${functionality === 'shapes' ? 'text-white' : 'text-black'} pointer-events-none`} /> : <HexagonOutlinedIcon className={`${functionality === 'shapes' ? 'text-white' : 'text-black'} pointer-events-none`} />
                     }
                 </button>
 

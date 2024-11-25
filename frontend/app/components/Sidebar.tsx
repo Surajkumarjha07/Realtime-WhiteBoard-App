@@ -6,7 +6,7 @@ import NotesBottomComponent from './notesBottomComponent';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { setTextBrightness, setTextColor } from '../Redux/slices/textFeatures';
 import { setNoteBackgroundColor, setNoteTextBrightness } from '../Redux/slices/noteFeatures';
-import { setShapeColor } from '../Redux/slices/shapes';
+import { setShapeColor, setShapeOpacity } from '../Redux/slices/shapes';
 
 export default function Sidebar() {
     const dispatch = useAppDispatch();
@@ -23,7 +23,8 @@ export default function Sidebar() {
         let target = e.target as HTMLInputElement;
         let value: number = parseInt(target.value) * 5;
         dispatch(setTextBrightness(value));
-        dispatch(setNoteTextBrightness(value));        
+        dispatch(setNoteTextBrightness(value));    
+        dispatch(setShapeOpacity(value));    
     }
 
     return (

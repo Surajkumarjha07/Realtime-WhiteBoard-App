@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import input from '../Interfaces/input'
-import canvasTextFeature from '../Interfaces/canvasTextFeatures'
 import { useAppSelector } from '../Redux/hooks'
 import shapeFeature from '../Interfaces/shapeFeature'
 
-export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor }: shapeFeature) {
+export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, patternType, borderType, opacity}: shapeFeature) {
   const [shapes, setShapes] = useState<shape[]>([])
   const functionality = useAppSelector(state => state.Functionality.functionality)
 
@@ -17,13 +15,13 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor }:
 
         setShapes((prev) => [
           ...prev,
-          { id: prev.length + 1, x: XPosition, y: YPosition, width: 100, height: 100, shapeColor: shapeColor, shapeType: shapeType },
+          { id: prev.length + 1, x: XPosition, y: YPosition, width: 100, height: 100, shapeColor: shapeColor, shapeType: shapeType, patternType: patternType, borderType: borderType, opacity: opacity},
         ]);
       }
     };
 
     const canvasElement = canvasRef.current;
-    if (canvasElement && functionality === 'upArrow') {
+    if (canvasElement && (functionality === 'upArrow' || functionality === 'shapes')) {
       canvasElement.addEventListener("click", handleCanvasClick);
     }
 
@@ -32,7 +30,10 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor }:
         canvasElement.removeEventListener("click", handleCanvasClick);
       }
     };
-  }, [functionality, shapeColor, shapeType])
+  }, [functionality, shapeColor, shapeType, patternType, borderType, opacity])
+
+  console.log(shapes);
+  
 
   return { shapes };
 
