@@ -3,7 +3,7 @@ import stickyNotesFeature from '../Interfaces/stickyNotesFeature'
 import { useAppSelector } from '../Redux/hooks'
 import note from '../Interfaces/note';
 
-export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontFamily, noteBackgroundColor }: stickyNotesFeature) {
+export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontFamily, noteBackgroundColor, noteTextBrightness }: stickyNotesFeature) {
     const functionality = useAppSelector(state => state.Functionality.functionality);
     const [notes, setNotes] = useState<note[]>([])
 
@@ -16,7 +16,7 @@ export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontF
 
                 setNotes((prev) => [
                     ...prev,
-                    { id: prev.length + 1, x: XPosition, y: YPosition, text: '', noteTextSize: noteTextSize, noteFontFamily: noteFontFamily, noteBackgroundColor: noteBackgroundColor },
+                    { id: prev.length + 1, x: XPosition, y: YPosition, text: '', noteTextSize: noteTextSize, noteFontFamily: noteFontFamily, noteBackgroundColor: noteBackgroundColor, noteTextBrightness: noteTextBrightness },
                 ]);
             }
         };
@@ -31,7 +31,7 @@ export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontF
                 canvasElement.removeEventListener("click", handleCanvasClick);
             }
         };
-    }, [functionality, noteBackgroundColor, noteTextSize, noteFontFamily])
+    }, [functionality, noteBackgroundColor, noteTextSize, noteFontFamily, noteTextBrightness])
 
     const removeNote = () => {
         let filterArr1 = notes.filter(note => note.text != "")
@@ -42,7 +42,7 @@ export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontF
         let target = e.target as HTMLTextAreaElement;
         let updatedNotes = notes.map(note =>
             note.id === id ?
-                { ...note, text: target.value, noteTextSize: noteTextSize, noteFontFamily: noteFontFamily, noteBackgroundColor: noteBackgroundColor } : note
+                { ...note, text: target.value, noteTextSize: noteTextSize, noteFontFamily: noteFontFamily, noteBackgroundColor: noteBackgroundColor, noteTextBrightness: noteTextBrightness } : note
         )
         setNotes(updatedNotes)
     }

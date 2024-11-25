@@ -4,8 +4,9 @@ import BottomComponent from './bottomComponent'
 import TextBottomComponent from './textBottomComponent';
 import NotesBottomComponent from './notesBottomComponent';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
-import { setTextColor } from '../Redux/slices/textFeatures';
-import { setNoteBackgroundColor } from '../Redux/slices/noteFeatures';
+import { setTextBrightness, setTextColor } from '../Redux/slices/textFeatures';
+import { setNoteBackgroundColor, setNoteTextBrightness } from '../Redux/slices/noteFeatures';
+import { setShapeColor, setShapeOpacity } from '../Redux/slices/shapes';
 
 export default function Sidebar() {
     const dispatch = useAppDispatch();
@@ -15,11 +16,20 @@ export default function Sidebar() {
         let target = e.target as HTMLButtonElement;
         dispatch(setTextColor(target.name));
         dispatch(setNoteBackgroundColor(target.name))
+        dispatch(setShapeColor(target.name))
+    }
+
+    const handleBrightness = (e: React.ChangeEvent) => {
+        let target = e.target as HTMLInputElement;
+        let value: number = parseInt(target.value) * 5;
+        dispatch(setTextBrightness(value));
+        dispatch(setNoteTextBrightness(value));    
+        dispatch(setShapeOpacity(value));    
     }
 
     return (
         <>
-            <aside className={`bg-white w-80 h-[68vh] shadow-md rounded-md absolute top-8 right-5 px-4 py-5 z-40 ${(functionality == "hand" || functionality == "eraser") ? 'hidden' : 'flex'} flex-col justify-between`}>
+            <aside className={`bg-white w-80 h-[68vh] shadow-md shadow-gray-400 rounded-md absolute top-8 right-5 px-4 py-5 z-30 ${(functionality == "hand" || functionality == "eraser") ? 'hidden' : 'flex'} flex-col justify-between`}>
                 <div className='flex justify-center gap-8 flex-wrap'>
                     <button className='bg-black rounded-full w-7 h-7' name='black' onClick={handleColorChange}/>
                     <button className='bg-gray-500 rounded-full w-7 h-7' name='gray-500' onClick={handleColorChange}/>
@@ -42,7 +52,7 @@ export default function Sidebar() {
                 </div>
 
                 <div>
-                    <input type="range" min={1} max={100} defaultValue={50} name="thickness" className='w-full' />
+                    <input type="range" min={1} max={20} defaultValue={100} name="thickness" className='w-full' onChange={handleBrightness} />
                 </div>
 
                 <hr />

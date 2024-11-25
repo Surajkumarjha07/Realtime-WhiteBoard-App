@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     noteTextSize: 'text-3xl',
     noteFontFamily: 'font-sans',
-    noteBackgroundColor: 'orange-300'
+    noteBackgroundColor: 'orange-300',
+    noteTextBrightness: 100
 }
 
 export const NoteFeatures = createSlice({
@@ -12,20 +13,21 @@ export const NoteFeatures = createSlice({
     reducers: {
         setNoteTextSize: (state, action) => {
             state.noteTextSize = action.payload
-            console.log("text size: ", action.payload);            
         },
 
         setNoteFontFamily: (state, action) => {
             state.noteFontFamily = action.payload
-            console.log("font family: ", action.payload);            
         },
 
         setNoteBackgroundColor: (state, action) => {
             state.noteBackgroundColor = action.payload;
-            console.log("bg color: ", action.payload);            
+        },
+
+        setNoteTextBrightness: (state, action) => {
+            state.noteTextBrightness = action.payload;
         }
     }
 })
 
-export const {setNoteBackgroundColor, setNoteTextSize, setNoteFontFamily} = NoteFeatures.actions;
+export const {setNoteBackgroundColor, setNoteTextSize, setNoteFontFamily, setNoteTextBrightness} = NoteFeatures.actions;
 export default NoteFeatures.reducer

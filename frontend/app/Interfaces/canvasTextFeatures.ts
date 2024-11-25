@@ -4,7 +4,8 @@ interface canvasTextFeature{
     canvasRef: RefObject<HTMLCanvasElement>,
     textColor: string,
     textSize: string,
-    fontFamily: string
+    fontFamily: string,
+    textBrightness: number
 }
 
 export default canvasTextFeature

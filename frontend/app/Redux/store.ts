@@ -2,12 +2,16 @@ import { configureStore } from '@reduxjs/toolkit';
 import FunctionalityReducer from './slices/functionality'
 import TextFeaturesReducer from './slices/textFeatures';
 import NoteFeaturesReducer from './slices/noteFeatures';
+import ShapeFeaturesReducer from './slices/shapes'
+import ImageFeaturesReducer from './slices/images'
 
 export const store = configureStore({
     reducer: {
         Functionality: FunctionalityReducer,
         TextFeatures: TextFeaturesReducer,
-        NoteFeatures: NoteFeaturesReducer
+        NoteFeatures: NoteFeaturesReducer,
+        ShapeFeatures: ShapeFeaturesReducer,
+        ImageFeatures: ImageFeaturesReducer
     }
 });
 
