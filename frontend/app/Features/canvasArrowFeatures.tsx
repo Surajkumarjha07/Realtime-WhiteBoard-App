@@ -1,69 +1,81 @@
-import React, { useEffect, useRef, useState } from 'react'
-import canvasArrow from '../Interfaces/canvasArrow'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import pencilFeature from '../Interfaces/pencilFeature'
 import { useAppSelector } from '../Redux/hooks'
-import arrow from '../Interfaces/arrow';
+import { lineColorMap } from '../ObjectMapping';
 
-export default function canvasArrowFeatures({ canvasRef }: canvasArrow) {
-    const functionality = useAppSelector(state => state.Functionality.functionality);
+export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
+    const functionality = useAppSelector(state => state.Functionality.functionality)
     const isDrawing = useRef(false);
-    const startX = useRef(0)
-    const startY = useRef(0)
-    const height = useRef(0)
-    const [arrows, setArrows] = useState<arrow[]>([])
+    const CTX = useRef<CanvasRenderingContext2D | null>(null);
+    const thickness = useAppSelector(state => state.PencilFeatures.thickness);
+    const color = useAppSelector(state => state.PencilFeatures.color);
+    let currentThickness = useRef(thickness);
+    let currentColor = useRef(color);
 
     useEffect(() => {
-        let rect = canvasRef.current?.getBoundingClientRect();
-
-        const handleClick = (e: MouseEvent) => {
-            if (canvasRef.current) {
-                let XPosition = e.clientX;
-                let YPosition = e.clientY;
-                console.log(XPosition, YPosition);
-                startX.current = e.clientX;
-                startY.current = e.clientY;
-                isDrawing.current = true;
-                console.log("start: ", isDrawing);
-            }
+        if (thickness !== currentThickness.current) {
+            currentThickness.current = thickness;
+            console.log('curr: ', currentThickness.current);
         }
 
-        const handleMove = (e: MouseEvent) => {
-            if (isDrawing.current) {
-                let XPosition = e.clientX;
-                let YPosition = e.clientY;
-                console.log("XPosition: ", XPosition, "Yposition: ", YPosition);
-                height.current = YPosition - startY.current;
-                const rotate = e.clientX * 100 / (rect!.right);
-                console.log(rotate);
-
-                
-            }
+        if (color !== currentColor.current) {
+            currentColor.current = color;
+            console.log('curr: ', currentColor.current);
         }
 
-        const handleStop = () => {
-            setArrows(prev => [
-                ...prev,
-                { id: prev.length + 1, x: startX.current, y: startY.current, width: 5, height: height.current, arrowColor: 'black', rotate: 0 }
-            ])
-            isDrawing.current = false 
-            console.log("stop: ", isDrawing);
+    }, [thickness, color])
+
+
+    const handleClick = useCallback((e: MouseEvent) => {
+        isDrawing.current = true;
+        let XPosition = e.offsetX;
+        let YPosition = e.offsetY;
+        let canvas = CTX.current;
+        if (canvas) {
+            canvas.beginPath();
+            canvas.moveTo(XPosition, YPosition);
+        }
+    }, [])
+
+    const handleStop = useCallback((e: MouseEvent) => {
+        if (isDrawing.current) {
+            let XPosition = e.offsetX;
+            let YPosition = e.offsetY;
+            let canvas = CTX.current;
+            if (canvas) {
+                canvas.lineTo(XPosition, YPosition);
+                canvas.strokeStyle = `${lineColorMap.get(currentColor.current)}`;
+                canvas.lineWidth = currentThickness.current;
+                canvas.stroke();
+            }
+        }
+        isDrawing.current = false;
+    }, [])
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            let ctx = canvasRef.current.getContext('2d');
+            canvasRef.current.width = window.innerWidth * window.devicePixelRatio;
+            canvasRef.current.height = window.innerHeight * window.devicePixelRatio;
+
+            ctx!.scale(window.devicePixelRatio, window.devicePixelRatio);
+            CTX.current = ctx;
+            // canvasRef.current.style.width = `${window.innerWidth}px`;
+            // canvasRef.current.style.height = `${window.innerHeight}px`;
         }
 
         let canvasElement = canvasRef.current;
         if (canvasElement && functionality === 'upRightArrow') {
-            canvasElement.addEventListener('mousedown', handleClick)
-            if (isDrawing) {
-                canvasElement.addEventListener('mousemove', handleMove)
-            }
-            canvasElement.addEventListener('mouseup', handleStop)
+            canvasElement.addEventListener('mousedown', handleClick);
+            canvasElement.addEventListener('mouseup', handleStop);
         }
 
         return () => {
-            if (canvasElement) {
-                canvasElement.removeEventListener('mousedown', handleClick)
-            }
+            canvasElement?.removeEventListener('mousedown', handleClick);
+            canvasElement?.removeEventListener('mouseup', handleStop);
         }
-    }, [functionality, isDrawing])
 
+    }, [functionality, handleClick, handleStop])
 
-    return { arrows }
+    return {}
 }

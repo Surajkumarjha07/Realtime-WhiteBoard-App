@@ -52,7 +52,7 @@ export default function HomePage() {
     opacity
   })
 
-  const { arrows } = canvasArrowFeatures({
+  const {  } = canvasArrowFeatures({
     canvasRef
   })
 
@@ -64,10 +64,10 @@ export default function HomePage() {
     <>
       <section className='relative w-screen h-screen pr-10'>
         <Sidebar />
-        <canvas className={`bg-white rounded-md shadow-md w-screen h-screen ${(functionality === "text" || functionality === "notes" || functionality === "upArrow") ? 'cursor-crosshair' : 'cursor-default'}`} ref={canvasRef}>
+        <canvas className={`bg-white rounded-md shadow-md w-screen h-screen cursor-crosshair`} ref={canvasRef}>
         </canvas>
 
-        {
+        {/* {
           arrows.map(arrow => (
             <div key={arrow.id}
               style={{
@@ -82,7 +82,7 @@ export default function HomePage() {
               className='rounded-md'
             />
           ))
-        }
+        } */}
 
         {
           shapes.map(shape => (

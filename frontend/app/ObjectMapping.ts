@@ -111,3 +111,25 @@ export const noteTextBrightnessMap = new Map([
     [95, 'text-opacity-95'],
     [100, 'text-opacity-100']
 ])
+
+export const lineColorMap = new Map([
+    ['black', '#000000'],
+    ['gray-500', '#6B7280'],
+    ['purple-400', '#9F7AEA'],
+    ['purple-600', '#6B46C1'],
+    ['blue-600', '#2563EB'],
+    ['blue-400', '#60A5FA'],
+    ['yellow-400', '#FBBF24'],
+    ['orange-600', '#F97316'],
+    ['green-600', '#16A34A'],
+    ['green-400', '#34D399'],
+    ['red-400', '#FB7185'],
+    ['red-600', '#EF4444'],
+    ['pink-400', '#F472B6'],
+    ['pink-600', '#D946EF'],
+    ['lime-500', '#84CC16'],
+    ['cyan-600', '#06B6D4'],
+    ['cyan-400', '#22D3EE'],
+    ['indigo-500', '#6366F1'],
+    ['orange-300', '#FDBA74'],
+])
