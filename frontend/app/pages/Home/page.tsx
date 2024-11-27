@@ -9,6 +9,9 @@ import { bgColorMap, borderColorMap, noteTextBrightnessMap, textBrightnessMap, t
 import canvasShapeFeature from '@/app/Features/canvasShapeFeature'
 import canvasArrowFeatures from '@/app/Features/canvasArrowFeatures'
 import canvasPencilFeature from '@/app/Features/canvasPencilFeature'
+import UserFeatures from '@/app/components/UserFeatures'
+import ChatComponent from '@/app/components/ChatComponent'
+import PeoplesComponent from '@/app/components/PeoplesComponent'
 
 export default function HomePage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -52,7 +55,7 @@ export default function HomePage() {
     opacity
   })
 
-  const {  } = canvasArrowFeatures({
+  const { } = canvasArrowFeatures({
     canvasRef
   })
 
@@ -63,6 +66,8 @@ export default function HomePage() {
   return (
     <>
       <section className='relative w-screen h-screen pr-10'>
+        <UserFeatures />
+        <ChatComponent />
         <Sidebar />
         <canvas className={`bg-white rounded-md shadow-md w-screen h-screen cursor-crosshair`} ref={canvasRef}>
         </canvas>

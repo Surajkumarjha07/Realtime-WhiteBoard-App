@@ -17,6 +17,7 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import ChangeHistoryOutlinedIcon from '@mui/icons-material/ChangeHistoryOutlined';
 import HexagonOutlinedIcon from '@mui/icons-material/HexagonOutlined';
 import { setImage } from '../Redux/slices/images';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 
 export default function BottomBar() {
     const dispatch = useAppDispatch();
