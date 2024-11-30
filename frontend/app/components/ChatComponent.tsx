@@ -11,17 +11,14 @@ export default function ChatComponent() {
     const toggle = useAppSelector(state => state.Toggle.toggle);
 
     const closeSidebar = () => {
-        dispatch(setFunctionality('document'))
         dispatch(setToggle(false));
     }
 
-    const functionalities = ['chat', 'users', 'arrow', 'hand', 'pencil', 'eraser', 'upRightArrow', 'text', 'notes', 'images', 'shapes', 'upArrow']
-
     return (
         <>
-            <aside className={`${(functionalities.includes(functionality) && toggle) ? 'opacity-100 h-[32rem] z-50' : 'opacity-0 h-0 -z-10'} w-80 bg-white shadow-md shadow-gray-400 absolute top-28 left-5 flex flex-col rounded-2xl overflow-hidden transition-all duration-500`}>
+            <aside className={`${toggle ? 'opacity-100 h-[32rem] z-50' : 'opacity-0 h-0 -z-10'} w-80 bg-white shadow-md shadow-gray-400 absolute top-28 left-5 flex flex-col rounded-2xl overflow-hidden transition-all duration-500`}>
                 <div className='flex justify-between items-center h-[12%] bg-blue-100 px-4 rounded-b-3xl border-b-2 border-b-gray-800'>
-                    <p className='text-gray-800 font-medium text-xl'> {functionality !== 'users' ? 'Messages' : 'Peoples'} </p>
+                    <p className='text-gray-800 font-medium text-xl'> {functionality === 'chat' ? 'Messages' : functionality === "users"? 'People' : 'Messages'} </p>
                     <button onClick={closeSidebar}>
                         <CloseOutlinedIcon className='text-gray-800' />
                     </button>
@@ -38,7 +35,7 @@ export default function ChatComponent() {
                         </button>
                         <input
                             type="text"
-                            className={`${(functionality === 'users' || functionality === 'document') ? 'hidden' : 'visible'} w-full h-12 pr-14 pl-6 outline-none border-2 border-gray-500 text-black py-2 rounded-full placeholder:text-gray-600 placeholder:font-medium bg-gray-100`}
+                            className={`${(functionality === 'users') ? 'hidden' : 'visible'} w-full h-12 pr-14 pl-6 outline-none border-2 border-gray-500 text-black py-2 rounded-full placeholder:text-gray-600 placeholder:font-medium bg-gray-100`}
                             placeholder="Enter message here"
                         />
                     </div>

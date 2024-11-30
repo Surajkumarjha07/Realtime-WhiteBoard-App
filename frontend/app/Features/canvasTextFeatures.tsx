@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import input from '../Interfaces/input'
 import canvasTextFeature from '../Interfaces/canvasTextFeatures'
 import { useAppSelector } from '../Redux/hooks'
@@ -7,6 +7,32 @@ import { textBrightnessMap } from '../ObjectMapping'
 export default function canvasTextFeatures({ canvasRef, textColor, textSize, fontFamily, textBrightness }: canvasTextFeature) {
   const [inputs, setInputs] = useState<input[]>([])
   const functionality = useAppSelector(state => state.Functionality.functionality)
+  const textId = useRef(0);
+  const isMoving = useRef(false);
+
+  const handleTextClick = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
+    if (functionality === 'hand') {
+      textId.current = id;
+      isMoving.current = true;
+    }
+  }, [functionality, inputs])
+
+  const handleTextMove = useCallback((e: MouseEvent | React.MouseEvent) => {
+    if (isMoving.current) {
+      let XPosition = e.clientX;
+      let YPosition = e.clientY;
+
+      let updatedInputs = inputs.map(input =>
+        input.id === textId.current ?
+          { ...input, x: XPosition, y: YPosition } : input
+      )
+      setInputs(updatedInputs);
+    }
+  }, [inputs])
+
+  const handleTextStop = useCallback(() => {
+    isMoving.current = false;
+  }, [])
 
   useEffect(() => {
     const handleCanvasClick = (e: MouseEvent) => {
@@ -25,6 +51,8 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
     const canvasElement = canvasRef.current;
     if (canvasElement && functionality === 'text') {
       canvasElement.addEventListener("click", handleCanvasClick);
+      canvasElement.addEventListener("mousemove", handleTextMove);
+      canvasElement.addEventListener("mouseup", handleTextStop);
     }
 
     return () => {
@@ -47,8 +75,8 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
         { ...input, text: target.value, textColor: textColor, textSize: textSize, fontFamily: fontFamily, textBrightness: textBrightness } : input
     ))
     setInputs(updatedInputs)
-  };  
+  };
 
-  return { settingText, removeInput, inputs };
+  return { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop };
 
 }
