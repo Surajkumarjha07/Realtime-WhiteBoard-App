@@ -13,6 +13,7 @@ import UserFeatures from '@/app/components/UserFeatures'
 import ChatComponent from '@/app/components/ChatComponent'
 import PeoplesComponent from '@/app/components/PeoplesComponent'
 import canvasEraserFeatures from '@/app/Features/canvasEraserFeatures'
+import Image from 'next/image'
 // import canvasObjectMove from '@/app/Features/canvasObjectMove'
 
 export default function CanvasPage() {
@@ -32,7 +33,7 @@ export default function CanvasPage() {
   const borderType = useAppSelector(state => state.ShapeFeatures.borderType);
   const opacity = useAppSelector(state => state.ShapeFeatures.opacity);
 
-  const { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop } = canvasTextFeatures({
+  const { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop, handleTextEraser } = canvasTextFeatures({
     canvasRef,
     textColor,
     textSize,
@@ -40,7 +41,7 @@ export default function CanvasPage() {
     textBrightness
   })
 
-  const { notes, removeNote, settingNoteText, handleNotesClick, handleNotesMove, handleNotesStop } = StickyNotesFeatures({
+  const { notes, removeNote, settingNoteText, handleNotesClick, handleNotesMove, handleNotesStop, handleNotesEraser } = StickyNotesFeatures({
     canvasRef,
     noteTextSize,
     noteFontFamily,
@@ -48,7 +49,7 @@ export default function CanvasPage() {
     noteTextBrightness
   })
 
-  const { shapes, handleClick, handleMove, handleStop } = canvasShapeFeature({
+  const { shapes, handleClick, handleMove, handleStop, handleEraser, handleShapeSelected, handleShapeResizeStart, handleHeightResize, handleWidthResize, handleShapeResizingStop } = canvasShapeFeature({
     canvasRef,
     shapeColor,
     shapeType,
@@ -61,7 +62,7 @@ export default function CanvasPage() {
 
   const { } = canvasPencilFeature({ canvasRef })
 
-  const { } = canvasEraserFeatures({ canvasRef })
+  // const { } = canvasEraserFeatures({ canvasRef })
 
   return (
     <>
@@ -69,8 +70,9 @@ export default function CanvasPage() {
         <UserFeatures />
         <ChatComponent />
         <Sidebar />
-        <canvas className={`bg-white rounded-md shadow-md w-screen h-screen cursor-crosshair`} ref={canvasRef}>
+        <canvas className={`bg-white rounded-md shadow-md w-screen h-screen ${functionality === 'eraser' ? 'cursor-auto' : 'cursor-crosshair'}`} ref={canvasRef}>
         </canvas>
+
 
         {/* {
           arrows.map(arrow => (
@@ -103,6 +105,7 @@ export default function CanvasPage() {
                 clipPath: 'polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%)'
               }}
               onMouseDown={(e) => handleClick(e, shape.id)} onMouseMove={(e) => handleMove(e)} onMouseUp={handleStop}
+              onMouseOver={(e) => handleEraser(e, shape.id)}
             /> :
 
               shape.shapeType === "triangle" ? <div key={shape.id}
@@ -116,17 +119,41 @@ export default function CanvasPage() {
                   cursor: `${functionality === 'hand' ? 'grab' : 'auto'}`
                 }}
                 onMouseDown={(e) => handleClick(e, shape.id)} onMouseMove={(e) => handleMove(e)} onMouseUp={handleStop}
+                onMouseOver={(e) => handleEraser(e, shape.id)}
               /> :
 
-                <div key={shape.id}
-                  style={{
-                    position: 'absolute',
-                    top: `${shape.y}px`,
-                    left: `${shape.x}px`,
-                  }}
-                  className={`w-48 h-48 ${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} border-4 ${shape.shapeType === "circle" ? 'rounded-full' : 'rounded-md'} ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-md' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-none' : 'border-dotted'}${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'}`}
-                  onMouseDown={(e) => handleClick(e, shape.id)} onMouseMove={(e) => handleMove(e)} onMouseUp={handleStop}
-                />
+                shape.shapeType === "circle" ?
+                  <div key={shape.id}
+                    style={{
+                      position: 'absolute',
+                      top: `${shape.y}px`,
+                      left: `${shape.x}px`,
+                      width: `${shape.width}px`,
+                      height: `${shape.height}px`
+                    }}
+                    className={`${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} rounded-full ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-full' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-full' : 'border-dotted'} ${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'} ${shape.resize ? 'border-2' : 'border-4'}`}
+                    onMouseDown={(e) => handleClick(e, shape.id)} onMouseMove={(e) => handleMove(e)} onMouseUp={handleStop}
+                    onMouseOver={(e) => handleEraser(e, shape.id)} onClick={(e) => handleShapeSelected(e, shape.id)}
+                  >
+                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-e-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleWidthResize} onMouseUp={handleShapeResizingStop} />
+                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute bottom-0 left-1/2 transform translate-y-1/2 -translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-ns-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleHeightResize} onMouseUp={handleShapeResizingStop} />
+                  </div> :
+
+                  <div key={shape.id}
+                    style={{
+                      position: 'absolute',
+                      top: `${shape.y}px`,
+                      left: `${shape.x}px`,
+                      width: `${shape.width}px`,
+                      height: `${shape.height}px`
+                    }}
+                    className={`${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-md' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-none' : 'border-dotted'} ${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'} ${shape.resize ? 'border-2' : 'border-4'}`}
+                    onMouseDown={(e) => handleClick(e, shape.id)} onMouseMove={(e) => handleMove(e)} onMouseUp={handleStop}
+                    onMouseOver={(e) => handleEraser(e, shape.id)} onClick={(e) => handleShapeSelected(e, shape.id)}
+                  >
+                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-e-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleWidthResize} onMouseUp={handleShapeResizingStop} />
+                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute bottom-0 left-1/2 transform translate-y-1/2 -translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-ns-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleHeightResize} onMouseUp={handleShapeResizingStop} />
+                  </div>
           ))
         }
 
@@ -144,6 +171,7 @@ export default function CanvasPage() {
               className={`${note.noteTextSize} ${note.noteFontFamily} ${bgColorMap.get(note.noteBackgroundColor)} ${noteTextBrightnessMap.get(note.noteTextBrightness)} rounded-md outline-none resize-none text-center text-black ${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'}`}
               onChange={(e) => settingNoteText(e, note.id)}
               onMouseDown={(e) => handleNotesClick(e, note.id)} onMouseMove={(e) => handleNotesMove(e)} onMouseUp={handleNotesStop}
+              onMouseOver={(e) => handleNotesEraser(e, note.id)}
             />
           ))
         }
@@ -166,6 +194,7 @@ export default function CanvasPage() {
               autoFocus
               onChange={(e) => settingText(e, input.id)}
               onMouseDown={(e) => handleTextClick(e, input.id)} onMouseMove={(e) => handleTextMove(e)} onMouseUp={handleTextStop}
+              onMouseOver={(e) => handleTextEraser(e, input.id)}
             />
           ))
         }

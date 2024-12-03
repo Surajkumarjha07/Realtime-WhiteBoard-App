@@ -10,6 +10,16 @@ export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontF
     const notesId = useRef(0);
     const XPos = useRef(0);
     const YPos = useRef(0);
+    const isEraserOpen = useAppSelector(state => state.Eraser.isEraserOpen);
+
+    const handleNotesEraser = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
+        if (isEraserOpen) {
+          let updatedNotes = notes.filter(shape => shape.id !== id);      
+          setNotes(updatedNotes);
+        }
+    
+      }, [isEraserOpen, notes])
+      
 
     const handleNotesClick = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
         if (functionality === 'hand') {
@@ -80,5 +90,5 @@ export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontF
         setNotes(updatedNotes)
     }
 
-    return { notes, removeNote, settingNoteText, handleNotesClick, handleNotesMove, handleNotesStop };
+    return { notes, removeNote, settingNoteText, handleNotesClick, handleNotesMove, handleNotesStop, handleNotesEraser };
 }

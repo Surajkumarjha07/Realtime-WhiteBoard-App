@@ -9,6 +9,16 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
   const functionality = useAppSelector(state => state.Functionality.functionality)
   const textId = useRef(0);
   const isMoving = useRef(false);
+  const isEraserOpen = useAppSelector(state => state.Eraser.isEraserOpen);
+
+  const handleTextEraser = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
+    if (isEraserOpen) {
+      let updatedInputs = inputs.filter(shape => shape.id !== id);      
+      setInputs(updatedInputs);
+    }
+
+  }, [isEraserOpen, inputs])
+  
 
   const handleTextClick = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
     if (functionality === 'hand') {
@@ -77,6 +87,6 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
     setInputs(updatedInputs)
   };
 
-  return { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop };
+  return { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop, handleTextEraser };
 
 }

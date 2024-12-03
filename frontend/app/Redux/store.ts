@@ -6,6 +6,7 @@ import ShapeFeaturesReducer from './slices/shapes'
 import ImageFeaturesReducer from './slices/images'
 import PencilFeaturesReducer from './slices/pencil'
 import ToggleReducer from './slices/toggle'
+import EraserReducer from './slices/Eraser'
 
 export const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
         ShapeFeatures: ShapeFeaturesReducer,
         ImageFeatures: ImageFeaturesReducer,
         PencilFeatures: PencilFeaturesReducer,
-        Toggle: ToggleReducer
+        Toggle: ToggleReducer,
+        Eraser: EraserReducer,
     }
 });
 
