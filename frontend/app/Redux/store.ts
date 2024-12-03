@@ -5,6 +5,7 @@ import NoteFeaturesReducer from './slices/noteFeatures';
 import ShapeFeaturesReducer from './slices/shapes'
 import ImageFeaturesReducer from './slices/images'
 import PencilFeaturesReducer from './slices/pencil'
+import ToggleReducer from './slices/toggle'
 
 export const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
         NoteFeatures: NoteFeaturesReducer,
         ShapeFeatures: ShapeFeaturesReducer,
         ImageFeatures: ImageFeaturesReducer,
-        PencilFeatures: PencilFeaturesReducer
+        PencilFeatures: PencilFeaturesReducer,
+        Toggle: ToggleReducer
     }
 });
 

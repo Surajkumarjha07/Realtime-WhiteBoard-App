@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import stickyNotesFeature from '../Interfaces/stickyNotesFeature'
 import { useAppSelector } from '../Redux/hooks'
 import note from '../Interfaces/note';
@@ -6,6 +6,39 @@ import note from '../Interfaces/note';
 export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontFamily, noteBackgroundColor, noteTextBrightness }: stickyNotesFeature) {
     const functionality = useAppSelector(state => state.Functionality.functionality);
     const [notes, setNotes] = useState<note[]>([])
+    const isMoving = useRef(false);
+    const notesId = useRef(0);
+    const XPos = useRef(0);
+    const YPos = useRef(0);
+
+    const handleNotesClick = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
+        if (functionality === 'hand') {
+            notesId.current = id;
+            let note = notes.find(note => note.id === id);
+            if (note) {
+                XPos.current = e.clientX - note.x;
+                YPos.current = e.clientY - note.y;
+            }
+            isMoving.current = true;
+        }
+    }, [functionality, notes])
+
+    const handleNotesMove = useCallback((e: MouseEvent | React.MouseEvent) => {
+        if (isMoving.current) {
+            let XPosition = e.clientX - XPos.current;
+            let YPosition = e.clientY - YPos.current;
+
+            let updatedNotes = notes.map(note =>
+                note.id === notesId.current ?
+                    { ...note, x: XPosition, y: YPosition } : note
+            )
+            setNotes(updatedNotes);
+        }
+    }, [notes])
+
+    const handleNotesStop = useCallback(() => {
+        isMoving.current = false;
+    }, [])
 
     useEffect(() => {
         const handleCanvasClick = (e: MouseEvent) => {
@@ -47,5 +80,5 @@ export default function StickyNotesFeatures({ canvasRef, noteTextSize, noteFontF
         setNotes(updatedNotes)
     }
 
-    return { notes, removeNote, settingNoteText };
+    return { notes, removeNote, settingNoteText, handleNotesClick, handleNotesMove, handleNotesStop };
 }

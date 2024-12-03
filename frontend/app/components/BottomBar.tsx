@@ -17,6 +17,7 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import ChangeHistoryOutlinedIcon from '@mui/icons-material/ChangeHistoryOutlined';
 import HexagonOutlinedIcon from '@mui/icons-material/HexagonOutlined';
 import { setImage } from '../Redux/slices/images';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 
 export default function BottomBar() {
     const dispatch = useAppDispatch();
@@ -28,25 +29,9 @@ export default function BottomBar() {
         dispatch(setFunctionality(target.name))
     }
 
-    // const handleImage = (event: any) => {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-
-    //         reader.onload = (e) => {
-    //             dispatch(setImage(e.target!.result as string));
-    //         };
-
-    //         reader.readAsDataURL(file);
-    //     }
-    // }
-
     return (
         <>
             <section className='w-2/4 h-16 bg-white rounded-md shadow-md shadow-gray-400 absolute bottom-10 left-1/2 transform -translate-x-1/2 flex justify-evenly items-center gap-8 z-40'>
-                <button className={functionality === "arrow" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='arrow' onClick={handleActive}>
-                    <NearMeOutlinedIcon className={functionality !== "arrow" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
-                </button>
                 <button className={functionality === "hand" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='hand' onClick={handleActive}>
                     <BackHandOutlinedIcon className={functionality !== "hand" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
                 </button>
