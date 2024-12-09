@@ -17,7 +17,8 @@ export const ShapeFeatures = createSlice({
             state.shapeType = action.payload;            
         },
         setShapeColor: (state, action) => {
-            state.shapeColor = action.payload                        
+            state.shapeColor = action.payload; 
+            console.log(action.payload);                                   
         },
         setPatternType: (state, action) => {
             state.patternType = action.payload

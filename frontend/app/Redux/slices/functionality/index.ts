@@ -10,7 +10,6 @@ export const FunctionalitySlice = createSlice({
     reducers: {
         setFunctionality: (state, action) => {
             state.functionality = action.payload;  
-            console.log(action.payload);                      
         }
     }
 })

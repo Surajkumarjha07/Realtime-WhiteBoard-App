@@ -23,7 +23,7 @@ export default function LogIn() {
       if (response.ok) {
         console.log(response);  
         sessionStorage.setItem("email", email)      
-        router.push("./Home");
+        router.push("./pages/Home");
       }
     } catch (error) {
       console.log("Internal Server Error", error);      

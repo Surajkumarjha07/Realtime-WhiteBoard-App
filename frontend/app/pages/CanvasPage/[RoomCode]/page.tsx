@@ -1,6 +1,6 @@
 "use client"
 import Sidebar from '@/app/components/Sidebar'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import BottomBar from '@/app/components/BottomBar'
 import { useAppSelector } from '@/app/Redux/hooks'
 import canvasTextFeatures from '@/app/Features/canvasTextFeatures'
@@ -11,10 +11,8 @@ import canvasArrowFeatures from '@/app/Features/canvasArrowFeatures'
 import canvasPencilFeature from '@/app/Features/canvasPencilFeature'
 import UserFeatures from '@/app/components/UserFeatures'
 import ChatComponent from '@/app/components/ChatComponent'
-import PeoplesComponent from '@/app/components/PeoplesComponent'
-import canvasEraserFeatures from '@/app/Features/canvasEraserFeatures'
-import Image from 'next/image'
-// import canvasObjectMove from '@/app/Features/canvasObjectMove'
+import { useParams } from 'next/navigation'
+import { useSocket } from '@/app/socketContext'
 
 export default function CanvasPage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -32,6 +30,8 @@ export default function CanvasPage() {
   const patternType = useAppSelector(state => state.ShapeFeatures.patternType);
   const borderType = useAppSelector(state => state.ShapeFeatures.borderType);
   const opacity = useAppSelector(state => state.ShapeFeatures.opacity);
+  const params = useParams();
+  const socket = useSocket(); 
 
   const { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop, handleTextEraser } = canvasTextFeatures({
     canvasRef,
@@ -62,8 +62,6 @@ export default function CanvasPage() {
 
   const { } = canvasPencilFeature({ canvasRef })
 
-  // const { } = canvasEraserFeatures({ canvasRef })
-
   return (
     <>
       <section className='relative w-screen h-screen pr-10'>
@@ -72,7 +70,6 @@ export default function CanvasPage() {
         <Sidebar />
         <canvas className={`bg-white rounded-md shadow-md w-screen h-screen ${functionality === 'eraser' ? 'cursor-auto' : 'cursor-crosshair'}`} ref={canvasRef}>
         </canvas>
-
 
         {/* {
           arrows.map(arrow => (
@@ -131,12 +128,12 @@ export default function CanvasPage() {
                       width: `${shape.width}px`,
                       height: `${shape.height}px`
                     }}
-                    className={`${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} rounded-full ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-full' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-full' : 'border-dotted'} ${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'} ${shape.resize ? 'border-2' : 'border-4'}`}
+                    className={`${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} rounded-full ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-full' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-full' : 'border-dotted'} ${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'} ${(shape.resize && functionality === 'arrow') ? 'border-2' : 'border-4'}`}
                     onMouseDown={(e) => handleClick(e, shape.id)} onMouseMove={(e) => handleMove(e)} onMouseUp={handleStop}
                     onMouseOver={(e) => handleEraser(e, shape.id)} onClick={(e) => handleShapeSelected(e, shape.id)}
                   >
-                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-e-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleWidthResize} onMouseUp={handleShapeResizingStop} />
-                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute bottom-0 left-1/2 transform translate-y-1/2 -translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-ns-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleHeightResize} onMouseUp={handleShapeResizingStop} />
+                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 ${(shape.resize && functionality === 'arrow') ? 'visible' : 'hidden'} cursor-e-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleWidthResize} onMouseUp={handleShapeResizingStop} />
+                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute bottom-0 left-1/2 transform translate-y-1/2 -translate-x-1/2 ${(shape.resize && functionality === 'arrow') ? 'visible' : 'hidden'} cursor-ns-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleHeightResize} onMouseUp={handleShapeResizingStop} />
                   </div> :
 
                   <div key={shape.id}
@@ -147,12 +144,12 @@ export default function CanvasPage() {
                       width: `${shape.width}px`,
                       height: `${shape.height}px`
                     }}
-                    className={`${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-md' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-none' : 'border-dotted'} ${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'} ${shape.resize ? 'border-2' : 'border-4'}`}
+                    className={`${textBrightnessMap.get(shape.opacity)} ${borderColorMap.get(shape.shapeColor)} ${shape.patternType === 'transparent' ? 'bg-transparent' : shape.patternType === 'opaque' ? 'bg-white' : shape.patternType === 'coloured' ? `${bgColorMap.get(shape.shapeColor)} bg-opacity-60` : 'bg-gradient-to-b from-red-600 via-pink-600 to-purple-600'} ${shape.borderType === 'roundedBorder' ? 'rounded-md' : shape.borderType === 'dashedBorder' ? 'border-dashed' : shape.borderType === 'solidBorder' ? 'rounded-none' : 'border-dotted'} ${functionality === 'hand' ? 'hover:cursor-grab' : 'cursor-auto'} ${(shape.resize && functionality === 'arrow') ? 'border-2' : 'border-4'}`}
                     onMouseDown={(e) => handleClick(e, shape.id)} onMouseMove={(e) => handleMove(e)} onMouseUp={handleStop}
                     onMouseOver={(e) => handleEraser(e, shape.id)} onClick={(e) => handleShapeSelected(e, shape.id)}
                   >
-                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-e-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleWidthResize} onMouseUp={handleShapeResizingStop} />
-                    <div className={`border border-blue-400 bg-blue-100 w-3 h-3 absolute bottom-0 left-1/2 transform translate-y-1/2 -translate-x-1/2 ${shape.resize ? 'visible' : 'hidden'} cursor-ns-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleHeightResize} onMouseUp={handleShapeResizingStop} />
+                    <div className={`border border-blue-400 bg-blue-100 w-6 h-3 absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 ${(shape.resize && functionality === 'arrow') ? 'visible' : 'hidden'} cursor-e-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleWidthResize} onMouseUp={handleShapeResizingStop} />
+                    <div className={`border border-blue-400 bg-blue-100 w-3 h-6 absolute bottom-0 left-1/2 transform translate-y-1/2 -translate-x-1/2 ${(shape.resize && functionality === 'arrow') ? 'visible' : 'hidden'} cursor-ns-resize`} onMouseDown={handleShapeResizeStart} onMouseMove={handleHeightResize} onMouseUp={handleShapeResizingStop} />
                   </div>
           ))
         }

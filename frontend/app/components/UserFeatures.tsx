@@ -17,12 +17,12 @@ export default function UserFeatures() {
 
   return (
     <>
-      <section className='flex justify-center items-start gap-4 w-fit h-fit px-10 py-2 absolute top-0 left-0 rounded-br-lg bg-blue-100 shadow-sm shadow-gray-400'>
-        <button className={functionality === "chat" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='chat' onClick={handleActive}>
+      <section className='flex justify-center items-start gap-4 w-fit h-fit px-10 py-2 absolute top-0 left-0 rounded-br-lg bg-white shadow-sm shadow-gray-400'>
+        <button className={functionality === "chat" ? 'bg-blue-400 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='chat' onClick={handleActive}>
           <QuestionAnswerOutlinedIcon className={functionality !== "chat" ? 'text-black pointer-events-none w-8 h-8' : 'text-white pointer-events-none w-8 h-8'} />
         </button>
 
-        <button className={functionality === "users" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='users' onClick={handleActive}>
+        <button className={functionality === "users" ? 'bg-blue-400 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='users' onClick={handleActive}>
           <PeopleAltOutlined className={functionality !== "users" ? 'text-black pointer-events-none w-8 h-8' : 'text-white pointer-events-none w-8 h-8'} />
         </button>
       </section>

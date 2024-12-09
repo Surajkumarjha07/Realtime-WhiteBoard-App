@@ -13,17 +13,24 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
   const YPos = useRef(0);
   const shapeRef = useRef<shape | undefined>(undefined)
   const isResizing = useRef(false)
+  const color = useAppSelector(state => state.ShapeFeatures.shapeColor);
 
-  const handleShapeSelected= useCallback((e: React.MouseEvent | MouseEvent, id: number) => {
+  const handleShapeSelected = (e: React.MouseEvent | MouseEvent, id: number) => {
     shapeId.current = id;
     let shape = shapes.find(shape => shape.id === id);
     shapeRef.current = shape;
     let updatedShapes = shapes.map(shape =>
       (shape.id === id && !shape.resize) ?
         { ...shape, resize: true } : shape
-    )
-    setShapes(updatedShapes)
-  }, [shapes])
+    );
+    setShapes(updatedShapes);
+  }
+
+  const handleShapeModify = useCallback(() => {
+    if (shapeRef.current?.shapeColor !== color) { 
+      console.log("j=hell");
+    }    
+  }, [color])
 
   const handleShapeResizeStart = useCallback(() => {
     isResizing.current = true;
@@ -65,14 +72,19 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
     }
   }, [])
 
-  const handleShapeResizingStop = useCallback(() => {
+  const handleShapeResizingStop = () => {
     isResizing.current = false;
+    console.log("before update: ", shapes);
+
     setShapes((prevShapes) =>
-      prevShapes.map(shape =>
-        shape.id === shapeId.current ?
-          { ...shape, resize: false } : shape))
-    console.log('resize false');
-  }, [])
+      prevShapes.map((shape) =>
+        shape.id === shapeId.current
+          ? { ...shape, resize: false }
+          : shape
+      )
+    );
+    console.log("after update: ", shapes);
+  };
 
   const handleEraser = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
     if (isEraserOpen) {
@@ -131,17 +143,17 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
       if (isResizing.current) {
         canvasElement.addEventListener('mousemove', handleHeightResize)
         canvasElement.addEventListener('mousemove', handleWidthResize)
-        canvasElement.addEventListener('mouseup', handleShapeResizingStop)
+        // canvasElement.addEventListener('click', handleShapeResizingStop)
       }
     }
 
     return () => {
       if (canvasElement) {
         canvasElement.removeEventListener("click", handleCanvasClick);
-        canvasElement.removeEventListener('mouseup', handleShapeResizingStop)
+        // canvasElement.removeEventListener('mouseup', handleShapeResizingStop)
       }
     };
-  }, [functionality, shapeColor, shapeType, patternType, borderType, opacity, handleShapeResizingStop])
+  }, [functionality, shapeColor, shapeType, patternType, borderType, opacity, handleShapeResizingStop, handleShapeModify])
 
   console.log(shapes);
 

@@ -33,7 +33,7 @@ export default function Sidebar() {
 
     return (
         <>
-            <aside className={`bg-white w-80 h-[68vh] shadow-md shadow-gray-400 rounded-md absolute top-8 right-5 px-4 py-5 z-30 ${(functionality == "hand" || functionality == "eraser") ? 'hidden' : 'flex'} flex-col justify-between`}>
+            <aside className={`bg-white w-80 h-[68vh] shadow-md shadow-gray-400 rounded-md absolute top-8 right-5 px-4 py-5 z-30 ${(functionality == "hand" || functionality == "eraser") ? 'hidden' : 'flex'} flex-col justify-evenly`}>
                 <div className='flex justify-center gap-8 flex-wrap'>
                     <button className='bg-black rounded-full w-7 h-7' name='black' onClick={handleColorChange} />
                     <button className='bg-gray-500 rounded-full w-7 h-7' name='gray-500' onClick={handleColorChange} />
@@ -56,10 +56,10 @@ export default function Sidebar() {
                 </div>
 
                 <div>
-                    <input type="range" min={1} max={20} defaultValue={functionality === 'pencil' ? 5 : 100} name="thickness" className='w-full' onChange={handleBrightness} />
+                    <input type="range" min={1} max={20} defaultValue={functionality === 'pencil' ? 5 : 100} name="thickness" className='w-full mt-4' onChange={handleBrightness} />
                 </div>
 
-                <hr />
+                <hr/>
 
                 {
                     functionality === "text" ?
