@@ -5,7 +5,8 @@ interface canvasTextFeature{
     textColor: string,
     textSize: string,
     fontFamily: string,
-    textBrightness: number
+    textBrightness: number,
+    textAlign: string
 }
 
 export default canvasTextFeature

@@ -8,41 +8,46 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
   const functionality = useAppSelector(state => state.Functionality.functionality)
   const isEraserOpen = useAppSelector(state => state.Eraser.isEraserOpen);
   const isMoving = useRef(false);
-  const shapeId = useRef(0);
+  const shapeId = useRef<number | null>(null);
   const XPos = useRef(0);
   const YPos = useRef(0);
   const shapeRef = useRef<shape | undefined>(undefined)
-  const isResizing = useRef(false)
-  const color = useAppSelector(state => state.ShapeFeatures.shapeColor);
+  const isModifying = useRef(false)
 
   const handleShapeSelected = (e: React.MouseEvent | MouseEvent, id: number) => {
-    shapeId.current = id;
-    let shape = shapes.find(shape => shape.id === id);
-    shapeRef.current = shape;
-    let updatedShapes = shapes.map(shape =>
-      (shape.id === id && !shape.resize) ?
-        { ...shape, resize: true } : shape
-    );
-    setShapes(updatedShapes);
+    if (functionality == "arrow") {
+      if (shapes.some(shape => shape.resize === true)) {
+        shapes.forEach(shape => shape.resize = false);
+      }
+      shapeId.current = id;
+      let shape = shapes.find(shape => shape.id === id);
+      shapeRef.current = shape;
+      let updatedShapes = shapes.map(shape =>
+        (shape.id === id && !shape.resize) ?
+          { ...shape, resize: true } : shape
+      );
+      setShapes(updatedShapes);
+    }
   }
 
-  const handleShapeModify = useCallback(() => {
-    if (shapeRef.current?.shapeColor !== color) { 
-      console.log("j=hell");
-    }    
-  }, [color])
+  const handleShapeModify = () => {
+    setShapes(prevShapes =>
+      prevShapes.map(shape =>
+        (shape.id === shapeId.current && shape.resize) ?
+          { ...shape, shapeColor, patternType, borderType } : shape
+      )
+    )
+  }
 
   const handleShapeResizeStart = useCallback(() => {
-    isResizing.current = true;
-    console.log(isResizing.current);
+    isModifying.current = true;
   }, [])
 
   const handleHeightResize = useCallback((e: MouseEvent | React.MouseEvent) => {
-    if (isResizing.current) {
+    if (isModifying.current) {
       let YPosition: number;
       if (shapeRef.current) {
         YPosition = (e.clientY - shapeRef.current.y);
-        console.log(e.clientY, shapeRef.current.y, YPosition);
       }
       setShapes((prevShapes) =>
         prevShapes.map((shape) =>
@@ -55,11 +60,10 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
   }, [])
 
   const handleWidthResize = useCallback((e: MouseEvent | React.MouseEvent) => {
-    if (isResizing.current) {
+    if (isModifying.current) {
       let XPosition: number;
       if (shapeRef.current) {
         XPosition = (e.clientX - shapeRef.current.x);
-        console.log(e.clientX, shapeRef.current.x, XPosition);
       }
       setShapes((prevShapes) =>
         prevShapes.map((shape) =>
@@ -72,10 +76,11 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
     }
   }, [])
 
-  const handleShapeResizingStop = () => {
-    isResizing.current = false;
-    console.log("before update: ", shapes);
+  const handleShapeResizingStop = useCallback(() => {
+    isModifying.current = false;
+  }, []);
 
+  const handleSRStop = () => {
     setShapes((prevShapes) =>
       prevShapes.map((shape) =>
         shape.id === shapeId.current
@@ -83,15 +88,13 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
           : shape
       )
     );
-    console.log("after update: ", shapes);
-  };
+  }
 
   const handleEraser = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
     if (isEraserOpen) {
       let updatedShapes = shapes.filter(shape => shape.id !== id);
       setShapes(updatedShapes);
     }
-
   }, [isEraserOpen, shapes])
 
   const handleClick = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
@@ -124,6 +127,10 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
   }, [])
 
   useEffect(() => {
+    handleShapeModify();
+  }, [shapeColor, borderType, patternType])
+
+  useEffect(() => {
     const handleCanvasClick = (e: MouseEvent) => {
       if (canvasRef.current) {
         const rect = canvasRef.current.getBoundingClientRect();
@@ -138,24 +145,25 @@ export default function canvasTextFeatures({ canvasRef, shapeType, shapeColor, p
     };
 
     const canvasElement = canvasRef.current;
-    if (canvasElement && (functionality === 'shapes')) {
-      canvasElement.addEventListener("click", handleCanvasClick);
-      if (isResizing.current) {
-        canvasElement.addEventListener('mousemove', handleHeightResize)
-        canvasElement.addEventListener('mousemove', handleWidthResize)
-        // canvasElement.addEventListener('click', handleShapeResizingStop)
+    if (canvasElement) {
+      if (functionality === "shapes" && !shapes.some(shape => shape.resize === true)) {
+        canvasElement.addEventListener("click", handleCanvasClick);
+      }
+      else {
+        canvasElement.addEventListener("click", handleSRStop)
       }
     }
 
     return () => {
       if (canvasElement) {
         canvasElement.removeEventListener("click", handleCanvasClick);
-        // canvasElement.removeEventListener('mouseup', handleShapeResizingStop)
+        canvasElement.removeEventListener("click", handleSRStop)
       }
     };
-  }, [functionality, shapeColor, shapeType, patternType, borderType, opacity, handleShapeResizingStop, handleShapeModify])
+  }, [functionality, shapeColor, shapeType, patternType, borderType, opacity, shapes])
 
   console.log(shapes);
+
 
   return { shapes, handleClick, handleMove, handleStop, handleEraser, handleShapeSelected, handleShapeResizeStart, handleHeightResize, handleWidthResize, handleShapeResizingStop };
 

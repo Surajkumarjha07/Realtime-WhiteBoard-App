@@ -17,12 +17,10 @@ export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
     useEffect(() => {
         if (thickness !== currentThickness.current) {
             currentThickness.current = thickness;
-            console.log('curr: ', currentThickness.current);
         }
 
         if (color !== currentColor.current) {
             currentColor.current = color;
-            console.log('curr: ', currentColor.current);
         }
 
     }, [thickness, color])

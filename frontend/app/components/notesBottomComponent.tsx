@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useAppDispatch } from '../Redux/hooks'
-import { setNoteTextSize } from '../Redux/slices/noteFeatures';
+import { setNoteTextSize, setNoteTextAlign } from '../Redux/slices/noteFeatures';
 import { setNoteFontFamily } from '../Redux/slices/noteFeatures';
 
 export default function NotesBottomComponent() {
@@ -22,13 +22,20 @@ export default function NotesBottomComponent() {
     }, [])
 
     function TextSize(e: React.MouseEvent) {
-        let target = e.target as HTMLButtonElement
-        dispatch(setNoteTextSize(target.name))
+        let target = e.target as HTMLButtonElement;
+        dispatch(setNoteTextSize(target.name));
     }
 
     function FontFamily(e: React.MouseEvent) {
         let target = e.target as HTMLButtonElement;
-        dispatch(setNoteFontFamily(target.name))
+        dispatch(setNoteFontFamily(target.name));
+    }
+
+    function textAlign(e: React.MouseEvent) {
+        let target = e.target as HTMLButtonElement;
+        if (target && target.name) {
+            dispatch(setNoteTextAlign(target.name));
+        };
     }
 
     return (
@@ -49,14 +56,14 @@ export default function NotesBottomComponent() {
                 </div>
 
                 <div className='flex justify-center items-center gap-8'>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md'>
-                        <Image src={'/Images/alignLeft.png'} alt='right' height={100} width={100} className='w-6 h-6' />
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md' name='text-start' onClick={textAlign}>
+                        <Image src={'/Images/alignLeft.png'} alt='right' height={100} width={100} className='w-6 h-6 pointer-events-none' />
                     </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md'>
-                        <Image src={'/Images/alignCenter.png'} alt='right' height={100} width={100} className='w-6 h-6' />
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md' name='text-center' onClick={textAlign}>
+                        <Image src={'/Images/alignCenter.png'} alt='right' height={100} width={100} className='w-6 h-6 pointer-events-none' />
                     </button>
-                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md'>
-                        <Image src={'/Images/alignRight.png'} alt='right' height={100} width={100} className='w-6 h-6' />
+                    <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md' name='text-end' onClick={textAlign}>
+                        <Image src={'/Images/alignRight.png'} alt='right' height={100} width={100} className='w-6 h-6 pointer-events-none' />
                     </button>
                     <button className='text-2xl text-black font-semibold hover:bg-gray-200 py-1 px-2 rounded-md box'>
                         <Image src={'/Images/upArrow.png'} alt='right' height={100} width={100} className='w-4 h-4 pointer-events-none' />
