@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Image from 'next/image'
 import BackHandOutlinedIcon from '@mui/icons-material/BackHandOutlined';
 import ArrowOutwardOutlinedIcon from '@mui/icons-material/ArrowOutwardOutlined';
@@ -18,20 +18,53 @@ import ChangeHistoryOutlinedIcon from '@mui/icons-material/ChangeHistoryOutlined
 import HexagonOutlinedIcon from '@mui/icons-material/HexagonOutlined';
 import { setImage } from '../Redux/slices/images';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import { setEraser } from '../Redux/slices/Eraser';
 
 export default function BottomBar() {
     const dispatch = useAppDispatch();
     const shapeType = useAppSelector(state => state.ShapeFeatures.shapeType)
     const functionality = useAppSelector(state => state.Functionality.functionality);
+    const imageRef = useRef<HTMLImageElement | null>(null);
 
     const handleActive = (e: React.MouseEvent<HTMLButtonElement>) => {
         let target = e.target as HTMLButtonElement;
         dispatch(setFunctionality(target.name))
+        if (target.name === 'eraser') {
+            dispatch(setEraser(true));
+        }
+        else {
+            dispatch(setEraser(false));
+        }
+    }
+
+    const handleImage = (e: React.ChangeEvent) => {
+        dispatch(setFunctionality('images'))
+        let target = e.target as HTMLInputElement;
+        let file = target.files![0];
+        if (file) {
+            let reader = new FileReader();
+
+            reader.onload = function (e) {
+                let result = e.target!.result;
+                if (typeof result === 'string') {
+                    imageRef.current!.src = result;
+                    imageRef.current!.style.display = 'block';
+                }
+            }
+            reader.readAsDataURL(file);
+        }
     }
 
     return (
         <>
+            {
+                functionality === 'images' &&
+                <Image src={''} alt='' height={100} width={100} className='absolute top-52 left-52 w-[25rem] h-[20rem] bg-white border-none outline-none' ref={imageRef} />
+            }
             <section className='w-2/4 h-16 bg-white rounded-md shadow-md shadow-gray-400 absolute bottom-10 left-1/2 transform -translate-x-1/2 flex justify-evenly items-center gap-8 z-40'>
+                <button className={functionality === "arrow" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='arrow' onClick={handleActive}>
+                    <NearMeOutlinedIcon className={functionality !== "arrow" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
+                </button>
                 <button className={functionality === "hand" ? 'bg-blue-500 p-2 rounded-md' : 'hover:bg-blue-200 p-2 rounded-md'} name='hand' onClick={handleActive}>
                     <BackHandOutlinedIcon className={functionality !== "hand" ? 'text-black pointer-events-none' : 'text-white pointer-events-none'} />
                 </button>

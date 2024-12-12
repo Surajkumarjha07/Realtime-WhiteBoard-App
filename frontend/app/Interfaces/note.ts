@@ -6,7 +6,9 @@ type note = {
     noteTextSize: string,
     noteFontFamily: string,
     noteBackgroundColor: string,
-    noteTextBrightness: number
+    noteTextBrightness: number,
+    resize: boolean,
+    textAlign: string
 }
 
 export default note;

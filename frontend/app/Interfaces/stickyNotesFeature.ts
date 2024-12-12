@@ -5,7 +5,8 @@ type stickyNotesFeature = {
     noteTextSize: string,
     noteFontFamily: string,
     noteBackgroundColor: string,
-    noteTextBrightness: number
+    noteTextBrightness: number,
+    noteTextAlign: string
 }
 
 export default stickyNotesFeature;

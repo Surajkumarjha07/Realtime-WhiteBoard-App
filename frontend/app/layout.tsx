@@ -5,6 +5,7 @@ import "./globals.css";
 import Background from "./components/Background";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
+import { SocketProvider } from './socketContext'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,10 +33,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white overflow-hidden`}
       >
-        <Provider store={store}>
-        <Background/>
-        {children}
-        </Provider>
+        <SocketProvider>
+          <Provider store={store}>
+            <Background />
+            {children}
+          </Provider>
+        </SocketProvider>
       </body>
     </html>
   );

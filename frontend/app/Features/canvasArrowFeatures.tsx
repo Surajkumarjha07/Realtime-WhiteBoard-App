@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import pencilFeature from '../Interfaces/pencilFeature'
 import { useAppSelector } from '../Redux/hooks'
 import { lineColorMap } from '../ObjectMapping';
+import arrow from '../Interfaces/arrow';
 
 export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
     const functionality = useAppSelector(state => state.Functionality.functionality)
@@ -11,16 +12,15 @@ export default function canvasPencilFeature({ canvasRef }: pencilFeature) {
     const color = useAppSelector(state => state.PencilFeatures.color);
     let currentThickness = useRef(thickness);
     let currentColor = useRef(color);
+    const [arrows, setArrows] = useState<arrow[]>([])
 
     useEffect(() => {
         if (thickness !== currentThickness.current) {
             currentThickness.current = thickness;
-            console.log('curr: ', currentThickness.current);
         }
 
         if (color !== currentColor.current) {
             currentColor.current = color;
-            console.log('curr: ', currentColor.current);
         }
 
     }, [thickness, color])

@@ -4,11 +4,60 @@ import canvasTextFeature from '../Interfaces/canvasTextFeatures'
 import { useAppSelector } from '../Redux/hooks'
 import { textBrightnessMap } from '../ObjectMapping'
 
-export default function canvasTextFeatures({ canvasRef, textColor, textSize, fontFamily, textBrightness }: canvasTextFeature) {
+export default function canvasTextFeatures({ canvasRef, textColor, textSize, fontFamily, textBrightness, textAlign }: canvasTextFeature) {
   const [inputs, setInputs] = useState<input[]>([])
   const functionality = useAppSelector(state => state.Functionality.functionality)
   const textId = useRef(0);
   const isMoving = useRef(false);
+  const isEraserOpen = useAppSelector(state => state.Eraser.isEraserOpen);
+  const inputId = useRef<number | null>(null)
+  const inputRef = useRef<input | null>(null)
+
+  const handleInputModify = (id: number) => {
+    if (functionality === "arrow") {
+      if (inputs.some(input => input.modify === true)) {
+        inputs.forEach(input => input.modify = false);
+      }
+      inputId.current = id;
+      let input = inputs.find(input => input.id === id);
+      if (input) {
+        inputRef.current = input;
+      }
+      setInputs(prevInputs =>
+        prevInputs.map(input =>
+          input.id === id ?
+            { ...input, modify: true } : input
+        )
+      )
+    }
+  }
+
+  const handleInputModification = () => {
+    setInputs(prevInputs =>
+      prevInputs.map(input =>
+        (input.id === inputId.current && input.modify) ?
+          { ...input, textColor, textSize, fontFamily, textBrightness, textAlign } : input
+      )
+    )
+  }
+
+  const handleInputModifyStop = () => {
+    setInputs(prevInputs =>
+      prevInputs.map(input =>
+        input.id === inputId.current ?
+          { ...input, modify: false } : input
+      )
+    )
+  }
+
+  const handleTextEraser = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
+    if (isEraserOpen) {
+      let updatedInputs = inputs.filter(shape => shape.id !== id);
+      setInputs(updatedInputs);
+    }
+
+  }, [isEraserOpen, inputs])
+
 
   const handleTextClick = useCallback((e: MouseEvent | React.MouseEvent, id: number) => {
     if (functionality === 'hand') {
@@ -35,6 +84,12 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
   }, [])
 
   useEffect(() => {
+    handleInputModification();
+  }, [textColor, textSize, fontFamily, textBrightness, textAlign])
+
+  console.log(inputs);
+
+  useEffect(() => {
     const handleCanvasClick = (e: MouseEvent) => {
       if (canvasRef.current) {
         const rect = canvasRef.current.getBoundingClientRect();
@@ -43,24 +98,32 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
 
         setInputs((prev) => [
           ...prev,
-          { id: prev.length + 1, x: XPosition, y: YPosition, text: '', textColor: textColor, textSize: textSize, fontFamily: fontFamily, textBrightness: textBrightness },
+          { id: prev.length + 1, x: XPosition, y: YPosition, text: '', textColor, textSize, fontFamily, textBrightness, modify: false, textAlign },
         ]);
       }
     };
 
     const canvasElement = canvasRef.current;
-    if (canvasElement && functionality === 'text') {
-      canvasElement.addEventListener("click", handleCanvasClick);
-      canvasElement.addEventListener("mousemove", handleTextMove);
-      canvasElement.addEventListener("mouseup", handleTextStop);
+    if (canvasElement) {
+      if (functionality === "text" && !inputs.some(input => input.modify === true)) {
+        canvasElement.addEventListener("click", handleCanvasClick);
+        canvasElement.addEventListener("mousemove", handleTextMove);
+        canvasElement.addEventListener("mouseup", handleTextStop);
+      }
+      else {
+        canvasElement.addEventListener("click", handleInputModifyStop)
+      }
     }
 
     return () => {
       if (canvasElement) {
         canvasElement.removeEventListener("click", handleCanvasClick);
+        canvasElement.removeEventListener("mousemove", handleTextMove);
+        canvasElement.removeEventListener("mouseup", handleTextStop);
+        canvasElement.removeEventListener("click", handleInputModifyStop)
       }
     };
-  }, [functionality, textSize, textColor, fontFamily, textBrightness])
+  }, [functionality, textSize, textColor, fontFamily, textBrightness, textAlign, inputs])
 
   const removeInput = () => {
     let filterArr = inputs.filter(input => input.text !== "")
@@ -72,11 +135,11 @@ export default function canvasTextFeatures({ canvasRef, textColor, textSize, fon
 
     let updatedInputs = inputs.map(input => (
       input.id === id ?
-        { ...input, text: target.value, textColor: textColor, textSize: textSize, fontFamily: fontFamily, textBrightness: textBrightness } : input
+        { ...input, text: target.value } : input
     ))
     setInputs(updatedInputs)
   };
 
-  return { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop };
+  return { settingText, removeInput, inputs, handleTextClick, handleTextMove, handleTextStop, handleTextEraser, handleInputModify };
 
 }

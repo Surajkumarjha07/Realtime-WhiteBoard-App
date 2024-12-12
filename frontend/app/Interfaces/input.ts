@@ -6,7 +6,9 @@ type input = {
     textColor: string,
     textSize: string,
     fontFamily: string,
-    textBrightness: number
+    textBrightness: number,
+    modify: boolean,
+    textAlign: string
   }
 
   export default input;

@@ -9,7 +9,7 @@ export const FunctionalitySlice = createSlice({
     name: 'Functionality',
     reducers: {
         setFunctionality: (state, action) => {
-            state.functionality = action.payload;
+            state.functionality = action.payload;  
         }
     }
 })

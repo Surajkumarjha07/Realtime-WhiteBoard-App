@@ -4,7 +4,8 @@ const initialState = {
     textColor: 'black',
     textSize: 'text-3xl',
     fontFamily: 'font-sans',
-    textBrightness: 100
+    textBrightness: 100,
+    textAlign: "text-start"
 }
 
 export const TextFeatures = createSlice({
@@ -22,10 +23,12 @@ export const TextFeatures = createSlice({
         },
         setTextBrightness: (state, action) => {
             state.textBrightness = action.payload;
-            console.log(action.payload);            
+        },
+        setTextAlign: (state, action) => {
+            state.textAlign = action.payload;
         }
     }
 })
 
-export const {setTextColor, setTextSize, setFontFamily, setTextBrightness} = TextFeatures.actions;
+export const {setTextColor, setTextSize, setFontFamily, setTextBrightness, setTextAlign} = TextFeatures.actions;
 export default TextFeatures.reducer;
